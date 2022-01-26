@@ -1,0 +1,46 @@
+@function rem($px: 16) {
+	@return math.div($px, 16) + rem;
+}
+
+@function em($px1: 16, $px2: 16) {
+	@return math.div($px1, $px2) + em;
+}
+
+@function prc($px1, $px2) {
+	@return math.div($px1, $px2) * 100;
+}
+
+@function percent($px1, $px2) {
+	@return math.div($px1, $px2) * 100%;
+}
+
+@mixin adaptiv-value(
+	$property,
+	$startSize,
+	$minSize,
+	$startWidth: $containerWidth,
+	$endWidth: $minWidth,
+	$type: 1
+) {
+	$addSize: $startSize - $minSize;
+	$endSize: $startWidth - $endWidth;
+	@if $type==0 {
+		#{$property}: calc(
+			rem($minSize) + $addSize * (100vw - rem($endWidth)) / $endSize
+		);
+	} @else if $type==1 {
+		#{$property}: rem($startSize);
+		@media (max-width: em($startWidth, 16)) {
+			#{$property}: calc(
+				rem($minSize) + $addSize * (100vw - rem($endWidth)) / $endSize
+			);
+		}
+	} @else if $type==2 {
+		#{$property}: rem($startSize);
+		@media (min-width: em($startWidth, 16)) {
+			#{$property}: calc(
+				rem($minSize) + $addSize * (100vw - rem($endWidth)) / $endSize
+			);
+		}
+	}
+}
